@@ -1,9 +1,19 @@
 import os
-
 from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Replace "*" with specific frontend URL for security
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 
 IMAGE_FOLDER = r"C:\Users\HP\Desktop\Rapid-Ink\data"  # Folder where images are stored
 TRACK_FILE = r"C:\Users\HP\Desktop\Rapid-Ink\backend\utils\last_image.txt"   # File tracking the last image sent
