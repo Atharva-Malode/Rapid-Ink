@@ -1,1 +1,36 @@
-print("The backend of the app")
+import os
+
+from fastapi.staticfiles import StaticFiles
+from fastapi import FastAPI, HTTPException
+
+app = FastAPI()
+
+IMAGE_FOLDER = r"C:\Users\HP\Desktop\Rapid-Ink\data"  # Folder where images are stored
+TRACK_FILE = r"C:\Users\HP\Desktop\Rapid-Ink\backend\utils\last_image.txt"   # File tracking the last image sent
+BASE_URL = "http://localhost:8000/images/"  # Change this to your actual URL
+
+
+# Mount the image folder so files can be accessed via http://localhost:8000/images/
+app.mount("/images", StaticFiles(directory=IMAGE_FOLDER), name="images")
+
+
+def get_next_image():
+    """Reads the last image ID, increments it, and updates the tracking file."""
+    with open(TRACK_FILE, "r+") as f:
+        last_id = int(f.read().strip())  # Read last used image ID
+        new_id = last_id + 1             # Increment image ID
+        f.seek(0)
+        f.write(str(new_id))             # Save new ID
+        f.truncate()
+    return f"{last_id}.jpg"  # Return image filename
+
+@app.get("/next-image/")
+def serve_next_image():
+    """Returns the next image URL to the frontend."""
+    image_name = get_next_image()
+    image_path = os.path.join(IMAGE_FOLDER, image_name)
+
+    if not os.path.exists(image_path):
+        raise HTTPException(status_code=404, detail="No more images available")
+
+    return {"image_url": f"{BASE_URL}{image_name}"}

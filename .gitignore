@@ -1,0 +1,44 @@
+# Ignore Python cache and virtual environments
+__pycache__/
+*.py[cod]
+*.sqlite3
+venv/
+env/
+*.egg-info/
+.DS_Store
+
+# Ignore FastAPI logs and local config files
+logs/
+*.log
+*.db
+instance/
+config.yaml
+
+# Ignore .env files (Secrets, API keys)
+.env
+**/.env
+
+# Ignore React build and dependencies
+node_modules/
+build/
+dist/
+.npm/
+
+# Ignore editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Ignore coverage/test files
+coverage/
+*.coverage
+htmlcov/
+*.pytest_cache/
+
+# Ignore 'data' folder (anywhere in the project)
+data/
+
+# Ignore OS-specific files
+Thumbs.db
+ehthumbs.db
