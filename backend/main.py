@@ -2,6 +2,10 @@ import os
 from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI
+from pydantic import BaseModel
+from typing import List
+
 
 app = FastAPI()
 
@@ -15,8 +19,8 @@ app.add_middleware(
 
 
 
-IMAGE_FOLDER = r"C:\Users\HP\Desktop\Rapid-Ink\data"  # Folder where images are stored
-TRACK_FILE = r"C:\Users\HP\Desktop\Rapid-Ink\backend\utils\last_image.txt"   # File tracking the last image sent
+IMAGE_FOLDER = r"C:\Users\athar\OneDrive\Desktop\Atharva\Github\open_source\Rapid-Ink\data"  # Folder where images are stored
+TRACK_FILE = r"C:\Users\athar\OneDrive\Desktop\Atharva\Github\open_source\Rapid-Ink\backend\utils\last_image.txt"   # File tracking the last image sent
 BASE_URL = "http://localhost:8000/images/"  # Change this to your actual URL
 
 
@@ -44,3 +48,19 @@ def serve_next_image():
         raise HTTPException(status_code=404, detail="No more images available")
 
     return {"image_url": f"{BASE_URL}{image_name}"}
+
+
+
+
+# Define the Pydantic model for receiving a point
+# Define a Pydantic model for incoming box data
+class Point(BaseModel):
+    x: float
+    y: float
+
+@app.post("/boxes")
+async def get_boxes(points: List[Point]):  # Expecting a list of points
+    print("Received points:", points)
+    return {"message": "Points received", "points": points}
+
+    
