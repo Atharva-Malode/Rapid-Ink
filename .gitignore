@@ -38,6 +38,7 @@ htmlcov/
 
 # Ignore 'data' folder (anywhere in the project)
 data/
+annotations/
 
 # Ignore OS-specific files
 Thumbs.db
