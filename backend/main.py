@@ -9,6 +9,7 @@ from routes.get_bounding_box.return_box import return_boxes_router
 from routes.home.home_route import home_router
 from routes.save_annotations.save_annotations import save_annotation_router
 from routes.return_labels.return_label import return_label_router
+from routes.update_label_json.update_json import add_label_router
 
 
 load_dotenv()
@@ -38,3 +39,4 @@ app.include_router(return_image_router, tags=["images"])
 app.include_router(return_boxes_router, tags=["boxes"])
 app.include_router(save_annotation_router, tags=["save annotations"])
 app.include_router(return_label_router, tags=["labels"])
+app.include_router(add_label_router, tags=["labels"])

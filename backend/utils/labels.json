@@ -1,0 +1,22 @@
+{
+    "two_wheeler": {
+        "id": 0,
+        "color": "#FF5733"
+    },
+    "three_wheeler": {
+        "id": 1,
+        "color": "#33FF57"
+    },
+    "four_wheeler": {
+        "id": 2,
+        "color": "#3357FF"
+    },
+    "LDV": {
+        "id": 3,
+        "color": "#F3C300"
+    },
+    "HDV": {
+        "id": 4,
+        "color": "#800080"
+    }
+}
