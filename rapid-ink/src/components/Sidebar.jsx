@@ -1,17 +1,24 @@
 import { Sidebar as SidebarIcon, Plus } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-export default function Sidebar() {
+export default function Sidebar({ vehicleLabels }) {
     const [isSidebarVisible, setIsSidebarVisible] = useState(false);
-    const [labels, setLabels] = useState({
-        "Two Wheeler": "#FF5733",
-        "Three Wheeler": "#33FF57",
-        "Four Wheeler": "#3357FF",
-        "LDV": "#F3FF33",
-        "HDV": "#FF33F3"
-    });
+    const [labels, setLabels] = useState({});
     const [newLabelName, setNewLabelName] = useState("");
     const [newLabelColor, setNewLabelColor] = useState("#000000");
+
+    useEffect(() => {
+        if (vehicleLabels) {
+            // Transform the vehicleLabels format to match the component's expected format
+            const transformedLabels = Object.fromEntries(
+                Object.entries(vehicleLabels).map(([key, value]) => [
+                    key.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
+                    value.color
+                ])
+            );
+            setLabels(transformedLabels);
+        }
+    }, [vehicleLabels]);
 
     const toggleSidebar = () => {
         setIsSidebarVisible(!isSidebarVisible);
@@ -125,42 +132,3 @@ export default function Sidebar() {
         </>
     );
 }
-// // Sidebar.jsx
-// import { Sidebar as SidebarIcon } from "lucide-react";
-// import { useState } from "react";
-
-// export default function Sidebar() {
-//     const [isSidebarVisible, setIsSidebarVisible] = useState(false);
-
-//     const toggleSidebar = () => {
-//         setIsSidebarVisible(!isSidebarVisible);
-//     };
-
-//     return (
-//         <>
-//             {/* Sidebar Trigger Button */}
-//             {!isSidebarVisible && (
-//                 <button
-//                 onClick={toggleSidebar}
-//                 className="absolute top-2 left-2 z-[1000] p-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-//                 >
-//                 <SidebarIcon size={20} />
-//                 </button>
-//             )}
-
-//             {/* Sidebar */}
-//             {isSidebarVisible && (
-//                 <div className="absolute left-0 top-0 w-[300px] h-full bg-black z-[999] p-5 shadow-[2px_0_5px_rgba(0,0,0,0.1)] text-white">
-//                 {/* Close Button */}
-//                 <button
-//                     onClick={toggleSidebar}
-//                     className="absolute top-2 right-2 p-2 text-white hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-black"
-//                 >
-//                     <SidebarIcon size={20} />
-//                 </button>
-//                 <h2 className="mt-8">Rapid-Ink</h2>
-//                 </div>
-//             )}
-//         </>
-//     );
-// }

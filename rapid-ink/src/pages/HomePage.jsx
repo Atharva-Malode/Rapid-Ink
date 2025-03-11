@@ -4,12 +4,31 @@ import { useNavigate } from "react-router-dom";
 export default function HomePage() {
     const navigate = useNavigate();
 
-    const handleUsernameSubmit = (username) => {
-        // Simulate backend response
-        setTimeout(() => {
-            const simulatedImageName = "sample-image.jpg";
-            navigate(`/${username}/${simulatedImageName}`);
-        }, 1000);
+    const handleUsernameSubmit = async (username) => {
+        try {
+            const response = await fetch('http://localhost:8000/return_label', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            localStorage.setItem('vechile_labels', JSON.stringify(data));
+            setTimeout(() => {
+                const simulatedImageName = "sample-image.jpg";
+                navigate(`/${username}/${simulatedImageName}`);
+            }, 1000);
+        } catch (error) {
+            console.error('Error fetching vehicle labels:', error);
+            setTimeout(() => {
+                const simulatedImageName = "sample-image.jpg";
+                navigate(`/${username}/${simulatedImageName}`);
+            }, 1000);
+        }
     };
 
     return (

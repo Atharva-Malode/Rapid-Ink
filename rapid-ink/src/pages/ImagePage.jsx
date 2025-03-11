@@ -3,6 +3,7 @@ import CanvasDisplay from "../components/CanvasDisplay";
 import useImageLoader from "../hooks/useImageLoader";
 import useBoundingBox from "../hooks/useBoundingBox";
 import Sidebar from "../components/Sidebar";
+import { useState, useEffect } from "react";
 
 export default function ImagePage() {
   const { username, imagename } = useParams();
@@ -13,6 +14,19 @@ export default function ImagePage() {
     updateBoundingBox, 
     deleteBoundingBox 
   } = useBoundingBox(imageUrl, username);
+  const [vehicleLabels, setVehicleLabels] = useState(null);
+
+  useEffect(() => {
+    const storedLabels = localStorage.getItem('vechile_labels');
+    if (storedLabels) {
+      try {
+        const parsedLabels = JSON.parse(storedLabels);
+        setVehicleLabels(parsedLabels);
+      } catch (error) {
+        console.error('Error parsing vehicle labels from localStorage:', error);
+      }
+    }
+  }, []);
   
   return (
     <div className="flex flex-col items-center justify-center w-full h-screen bg-black">
@@ -20,7 +34,7 @@ export default function ImagePage() {
         <p className="text-white text-lg">Loading image...</p>
       ) : (
         <>
-          <Sidebar/>
+          <Sidebar vehicleLabels={vehicleLabels}/>
           <div className="mb-4 text-white text-sm">
             Click on objects to detect them. Click on boxes to select and edit them.
           </div>

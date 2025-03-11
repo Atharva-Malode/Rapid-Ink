@@ -71,7 +71,7 @@ export default function CanvasDisplay({ imageUrl, boundingBoxes = [], onClick, o
           { x: box.x_max, y: box.y_max }  // bottom-right
         ];
         
-        handles.forEach((handle, i) => {
+        handles.forEach((handle) => {
           ctx.fillStyle = "yellow";
           ctx.fillRect(
             handle.x - handleSize / 2, 
