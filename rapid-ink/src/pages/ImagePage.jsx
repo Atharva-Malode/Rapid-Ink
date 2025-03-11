@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import CanvasDisplay from "../components/CanvasDisplay";
 import useImageLoader from "../hooks/useImageLoader";
 import useBoundingBox from "../hooks/useBoundingBox";
+import Sidebar from "../components/Sidebar";
 
 export default function ImagePage() {
   const { username, imagename } = useParams();
@@ -19,6 +20,7 @@ export default function ImagePage() {
         <p className="text-white text-lg">Loading image...</p>
       ) : (
         <>
+          <Sidebar/>
           <div className="mb-4 text-white text-sm">
             Click on objects to detect them. Click on boxes to select and edit them.
           </div>
