@@ -17,7 +17,7 @@ export default function HomePage() {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-            localStorage.setItem('vechile_labels', JSON.stringify(data));
+            localStorage.setItem('vehicle_labels', JSON.stringify(data));
             setTimeout(() => {
                 const simulatedImageName = "sample-image.jpg";
                 navigate(`/${username}/${simulatedImageName}`);

@@ -7,7 +7,7 @@ export default function CanvasDisplay({ imageUrl, boundingBoxes = [], onClick, o
   const [draggingCorner, setDraggingCorner] = useState(null);
   const [draggingBox, setDraggingBox] = useState(null);
   const [hoverBox, setHoverBox] = useState(null);
-  
+
   // Draw the image
   useEffect(() => {
     if (imageUrl) {
@@ -29,38 +29,38 @@ export default function CanvasDisplay({ imageUrl, boundingBoxes = [], onClick, o
   // Draw all bounding boxes
   const drawAllBoxes = () => {
     if (!canvasRef.current) return;
-    
+
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
-    
+
     // Clear canvas and redraw image
     const img = new Image();
     img.src = imageUrl;
     ctx.drawImage(img, 0, 0, img.width, img.height);
-    
+
     // Draw each bounding box
     boundingBoxes.forEach((box, index) => {
       const width = box.x_max - box.x_min;
       const height = box.y_max - box.y_min;
-      
+
       // Draw rectangle
-      ctx.strokeStyle = activeBox === index ? "yellow" : "green";
+      ctx.strokeStyle = box.color || "green";
       ctx.lineWidth = 2;
       ctx.strokeRect(box.x_min, box.y_min, width, height);
-      
+
       // Draw label with number and delete button
       ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
       ctx.fillRect(box.x_min, box.y_min - 25, 60, 25);
-      
+
       ctx.fillStyle = "white";
       ctx.font = "16px Arial";
       ctx.fillText(`#${index + 1}`, box.x_min + 5, box.y_min - 7);
-      
+
       // Draw X button
       ctx.fillStyle = hoverBox === `delete-${index}` ? "red" : "white";
       ctx.font = "bold 16px Arial";
       ctx.fillText("✕", box.x_min + 40, box.y_min - 7);
-      
+
       // Draw resize handles if active
       if (activeBox === index) {
         const handleSize = 8;
@@ -70,7 +70,7 @@ export default function CanvasDisplay({ imageUrl, boundingBoxes = [], onClick, o
           { x: box.x_min, y: box.y_max }, // bottom-left
           { x: box.x_max, y: box.y_max }  // bottom-right
         ];
-        
+
         handles.forEach((handle) => {
           ctx.fillStyle = "yellow";
           ctx.fillRect(
@@ -83,27 +83,27 @@ export default function CanvasDisplay({ imageUrl, boundingBoxes = [], onClick, o
       }
     });
   };
-  
+
   // Update when boundingBoxes change
   useEffect(() => {
     if (!isDrawingImage) {
       drawAllBoxes();
     }
   }, [boundingBoxes, activeBox, hoverBox, isDrawingImage]);
-  
+
   // Handle mouse down - for selection, dragging and resizing
   const handleMouseDown = (e) => {
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
     const x = (e.clientX - rect.left) * (canvas.width / rect.width);
     const y = (e.clientY - rect.top) * (canvas.height / rect.height);
-    
+
     // Check if clicking on delete button
     for (let i = 0; i < boundingBoxes.length; i++) {
       const box = boundingBoxes[i];
       const deleteX = box.x_min + 40;
       const deleteY = box.y_min - 7;
-      
+
       if (
         x >= deleteX - 10 && 
         x <= deleteX + 10 && 
@@ -115,7 +115,7 @@ export default function CanvasDisplay({ imageUrl, boundingBoxes = [], onClick, o
         return;
       }
     }
-    
+
     // Check if clicking on a resize handle
     if (activeBox !== null) {
       const box = boundingBoxes[activeBox];
@@ -126,7 +126,7 @@ export default function CanvasDisplay({ imageUrl, boundingBoxes = [], onClick, o
         { x: box.x_min, y: box.y_max, cursor: "nesw-resize", corner: "bottomLeft" },
         { x: box.x_max, y: box.y_max, cursor: "nwse-resize", corner: "bottomRight" }
       ];
-      
+
       for (let i = 0; i < handles.length; i++) {
         const handle = handles[i];
         if (
@@ -147,7 +147,7 @@ export default function CanvasDisplay({ imageUrl, boundingBoxes = [], onClick, o
         }
       }
     }
-    
+
     // Check if clicking inside a box (for dragging)
     for (let i = 0; i < boundingBoxes.length; i++) {
       const box = boundingBoxes[i];
@@ -170,28 +170,28 @@ export default function CanvasDisplay({ imageUrl, boundingBoxes = [], onClick, o
         return;
       }
     }
-    
+
     // If clicking outside any box, deselect and allow new box creation
     setActiveBox(null);
     onClick(e);
   };
-  
+
   // Handle mouse move - for dragging and resizing
   const handleMouseMove = (e) => {
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
     const x = (e.clientX - rect.left) * (canvas.width / rect.width);
     const y = (e.clientY - rect.top) * (canvas.height / rect.height);
-    
+
     // Update cursor based on hover position
     let cursorChanged = false;
-    
+
     // Check if hovering over delete button
     for (let i = 0; i < boundingBoxes.length; i++) {
       const box = boundingBoxes[i];
       const deleteX = box.x_min + 40;
       const deleteY = box.y_min - 7;
-      
+
       if (
         x >= deleteX - 10 && 
         x <= deleteX + 10 && 
@@ -204,10 +204,10 @@ export default function CanvasDisplay({ imageUrl, boundingBoxes = [], onClick, o
         break;
       }
     }
-    
+
     if (!cursorChanged) {
       setHoverBox(null);
-      
+
       // Check if hovering over a resize handle
       if (activeBox !== null) {
         const box = boundingBoxes[activeBox];
@@ -218,7 +218,7 @@ export default function CanvasDisplay({ imageUrl, boundingBoxes = [], onClick, o
           { x: box.x_min, y: box.y_max, cursor: "nesw-resize" },
           { x: box.x_max, y: box.y_max, cursor: "nwse-resize" }
         ];
-        
+
         for (let i = 0; i < handles.length; i++) {
           const handle = handles[i];
           if (
@@ -233,7 +233,7 @@ export default function CanvasDisplay({ imageUrl, boundingBoxes = [], onClick, o
           }
         }
       }
-      
+
       // Check if hovering inside a box
       if (!cursorChanged) {
         for (let i = 0; i < boundingBoxes.length; i++) {
@@ -249,18 +249,18 @@ export default function CanvasDisplay({ imageUrl, boundingBoxes = [], onClick, o
             break;
           }
         }
-        
+
         if (!cursorChanged) {
           canvas.style.cursor = "crosshair";
         }
       }
     }
-    
+
     // Handle corner dragging
     if (draggingCorner) {
       const { boxIndex, corner, originalBox } = draggingCorner;
       const newBox = { ...originalBox };
-      
+
       switch (corner) {
         case "topLeft":
           newBox.x_min = Math.min(originalBox.x_max - 10, x);
@@ -281,36 +281,37 @@ export default function CanvasDisplay({ imageUrl, boundingBoxes = [], onClick, o
         default:
           break;
       }
-      
+
       onBoxUpdate(boxIndex, newBox);
     }
-    
+
     // Handle box dragging
     if (draggingBox) {
       const { boxIndex, offsetX, offsetY, originalBox } = draggingBox;
       const width = originalBox.x_max - originalBox.x_min;
       const height = originalBox.y_max - originalBox.y_min;
-      
+
       const newX = x - offsetX;
       const newY = y - offsetY;
-      
+
       const newBox = {
         x_min: newX,
         y_min: newY,
         x_max: newX + width,
-        y_max: newY + height
+        y_max: newY + height,
+        color: originalBox.color
       };
-      
+
       onBoxUpdate(boxIndex, newBox);
     }
   };
-  
+
   // Handle mouse up - end dragging
   const handleMouseUp = () => {
     setDraggingCorner(null);
     setDraggingBox(null);
   };
-  
+
   // Handle mouse leave - end dragging
   const handleMouseLeave = () => {
     setDraggingCorner(null);
