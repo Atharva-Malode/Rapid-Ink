@@ -36,7 +36,13 @@ export default function useBoundingBoxes(imageUrl, username) {
       const data = await sendClickData(imageUrl, scaledX, scaledY, username);
       if (data?.bounding_box) {
         // Add the new bounding box to the array with the active label color
-        setBoundingBoxes(prev => [...prev, { ...data.bounding_box, color: activeLabel.color }]);
+        setBoundingBoxes(prev => [
+          ...prev, 
+          { 
+            ...data.bounding_box, 
+            label: activeLabel,
+            color: activeLabel.color
+          }]);
       }
     } catch (error) {
       console.error("Error getting bounding box:", error);

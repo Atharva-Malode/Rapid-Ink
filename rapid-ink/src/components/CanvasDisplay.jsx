@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from "react";
 
-export default function CanvasDisplay({ imageUrl, boundingBoxes = [], onClick, onBoxUpdate, onBoxDelete }) {
+export default function CanvasDisplay({ imageUrl, boundingBoxes = [], onClick, onBoxUpdate, onBoxDelete, activeLabel, setActiveLabel }) {
   const canvasRef = useRef(null);
   const [isDrawingImage, setIsDrawingImage] = useState(true);
   const [activeBox, setActiveBox] = useState(null);
@@ -159,6 +159,9 @@ export default function CanvasDisplay({ imageUrl, boundingBoxes = [], onClick, o
       ) {
         e.stopPropagation();
         setActiveBox(i);
+        if (box.label) {
+          setActiveLabel(box.label);
+        }
         setDraggingBox({
           boxIndex: i,
           startX: x,
@@ -175,6 +178,17 @@ export default function CanvasDisplay({ imageUrl, boundingBoxes = [], onClick, o
     setActiveBox(null);
     onClick(e);
   };
+
+  useEffect(() => {
+    if (activeBox !== null && activeLabel) {
+      const updatedBox = { 
+        ...boundingBoxes[activeBox], 
+        label: activeLabel, 
+        color: activeLabel.color 
+      };
+      onBoxUpdate(activeBox, updatedBox);
+    }
+  }, [activeLabel]);
 
   // Handle mouse move - for dragging and resizing
   const handleMouseMove = (e) => {

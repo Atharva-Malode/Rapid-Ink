@@ -40,7 +40,7 @@ export default function ImagePage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full min-h-screen bg-black py-4 text-center">
+    <div className="flex flex-col items-center justify-center min-w-full min-h-screen bg-black p-4 text-center">
       {loading ? (
         <p className="text-white text-lg">Loading image...</p>
       ) : (
@@ -70,6 +70,8 @@ export default function ImagePage() {
             onClick={(event) => handleCanvasClick(event, activeLabel)}
             onBoxUpdate={updateBoundingBox}
             onBoxDelete={deleteBoundingBox}
+            activeLabel={activeLabel}
+            setActiveLabel={setActiveLabel}
           />
         </>
       )}
