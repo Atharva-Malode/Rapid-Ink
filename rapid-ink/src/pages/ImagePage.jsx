@@ -4,6 +4,7 @@ import useImageLoader from "../hooks/useImageLoader";
 import useBoundingBox from "../hooks/useBoundingBox";
 import Sidebar from "../components/Sidebar";
 import { useState, useEffect } from "react";
+import { sendBoundingBoxesData } from "../utils/api";
 
 export default function ImagePage() {
   const { username, imagename } = useParams();
@@ -37,6 +38,18 @@ export default function ImagePage() {
 
   const handleLabelChange = (label) => {
     setActiveLabel(label);
+  };
+
+  const handleNextImage = async () => {
+    // Send all bounding boxes to the backend
+    console.log(boundingBoxes);
+    const result = await sendBoundingBoxesData(imageUrl, boundingBoxes, username);
+    console.log("Bounding boxes sent:", result);
+    
+    // Optionally, clear the current boxes or navigate to a new image.
+    // For example, if you want to load a new image:
+    // navigate(`/${username}/new-image.jpg`);
+    // Or trigger a refresh of the image via your loader hook.
   };
 
   return (
@@ -73,6 +86,13 @@ export default function ImagePage() {
             activeLabel={activeLabel}
             setActiveLabel={setActiveLabel}
           />
+
+          <button
+            onClick={handleNextImage}
+            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+          >
+            Next Image
+          </button>
         </>
       )}
     </div>
